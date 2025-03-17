@@ -131,21 +131,14 @@ int main()
         wcout << "KIERUNEK UPLYWU CZASU --->" << endl;
         QueryPerformanceCounter(&start);
 
-        #pragma omp parallel sections
+        #pragma omp parallel num_threads(3)
         {
             #pragma omp single
-
                 Func(character1, iterations, delay, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-
-            #pragma omp section
-            {
+            #pragma omp single
                 Func(character2, iterations, delay, FOREGROUND_RED | FOREGROUND_INTENSITY);
-            }
-            #pragma omp section
-            {
+            #pragma omp single
                 Func(character3, iterations, delay, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-            }
-
         }
 
 
