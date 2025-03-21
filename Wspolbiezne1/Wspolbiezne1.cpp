@@ -1,15 +1,12 @@
 ﻿// Wspolbiezne1.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-
 #include <iostream>
 #include <Windows.h>
 #include <omp.h>
 #include <thread>
 #include <mutex>
-#include "matplotlibcpp.h"
 #include <vector>
 using namespace std;
-using namespace plt = matplotlibcpp;
 mutex mtx;
 void Func(char character, int iterations, int delay, WORD color)
 {
@@ -184,12 +181,7 @@ int main()
         wcout << "Czas trwania programu: " << times[4] << " milisekund\n" << endl;
 
 
-        vector<string> labels = { "Sequential", "Parallel (thread)", "Parallel (thread + mutex)", "Parallel (OpenMP)", "Parallel (OpenMP + critical)" };
-        plt::bar(labels, times);
-        plt::xlabel("Execution Method");
-        plt::ylabel("Execution Time (ms)");
-        plt::title("Execution Time Comparison");
-        plt::show();
+ 
 
 
 
