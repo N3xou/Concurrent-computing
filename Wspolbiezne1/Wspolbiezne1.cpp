@@ -6,7 +6,10 @@
 #include <omp.h>
 #include <thread>
 #include <mutex>
+#include "matplotlibcpp.h"
+#include <vector>
 using namespace std;
+using namespace plt = matplotlibcpp;
 mutex mtx;
 void Func(char character, int iterations, int delay, WORD color)
 {
@@ -75,6 +78,7 @@ int main()
     double duration;
     int iterations, delay;
     char character1, character2, character3;
+	vector<double> times(5);
     do {
         wcout << "-> Podaj liczbe iteracji: ";
         cin >> iterations;
@@ -96,9 +100,10 @@ int main()
 
         Func(character3, iterations, delay, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
         QueryPerformanceCounter(&end);
+        times[0] = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart * 1000;
+
         std::cout << std::endl;
-        duration = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart * 1000;
-        wcout << "Czas trwania programu: " << duration << " milisekund\n" << endl;
+        wcout << "Czas trwania programu: " << times[0] << " milisekund\n" << endl;
 
         wcout << "Zadania realizowane ROWNOLEGLE - Liczba zadan 3" << endl;
         wcout << "KIERUNEK UPLYWU CZASU --->" << endl;
@@ -111,8 +116,8 @@ int main()
         t3.join();
         QueryPerformanceCounter(&end);
         std::cout << std::endl;
-        duration = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart * 1000;
-        wcout << "Czas trwania programu: " << duration << " milisekund\n" << endl;
+        times[1] = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart * 1000;
+        wcout << "Czas trwania programu: " << times[1] << " milisekund\n" << endl;
 
         wcout << "Zadania realizowane ROWNOLEGLE - Liczba zadan 3" << endl;
         wcout << "KIERUNEK UPLYWU CZASU --->" << endl;
@@ -125,8 +130,8 @@ int main()
         t6.join();
         QueryPerformanceCounter(&end);
         std::cout << std::endl;
-        duration = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart * 1000;
-        wcout << "Czas trwania programu: " << duration << " milisekund\n" << endl;
+        times[2] = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart * 1000;
+        wcout << "Czas trwania programu: " << times[2] << " milisekund\n" << endl;
         wcout << "Zadania realizowane ROWNOLEGLE OpenMP - Liczba zadan 3" << endl;
         wcout << "KIERUNEK UPLYWU CZASU --->" << endl;
         QueryPerformanceCounter(&start);
@@ -148,11 +153,10 @@ int main()
 
         }
 
-
         QueryPerformanceCounter(&end);
         std::cout << std::endl;
-        duration = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart * 1000;
-        wcout << "Czas trwania programu: " << duration << " milisekund\n" << endl;
+        times[3] = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart * 1000;
+        wcout << "Czas trwania programu: " << times[3] << " milisekund\n" << endl;
         wcout << "Zadania realizowane ROWNOLEGLE OpenMP - Liczba zadan 3" << endl;
         wcout << "KIERUNEK UPLYWU CZASU --->" << endl;
         QueryPerformanceCounter(&start);
@@ -176,9 +180,16 @@ int main()
 
         QueryPerformanceCounter(&end);
         std::cout << std::endl;
-        duration = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart * 1000;
-        wcout << "Czas trwania programu: " << duration << " milisekund\n" << endl;
+        times[4] = static_cast<double>(end.QuadPart - start.QuadPart) / frequency.QuadPart * 1000;
+        wcout << "Czas trwania programu: " << times[4] << " milisekund\n" << endl;
 
+
+        vector<string> labels = { "Sequential", "Parallel (thread)", "Parallel (thread + mutex)", "Parallel (OpenMP)", "Parallel (OpenMP + critical)" };
+        plt::bar(labels, times);
+        plt::xlabel("Execution Method");
+        plt::ylabel("Execution Time (ms)");
+        plt::title("Execution Time Comparison");
+        plt::show();
 
 
 
